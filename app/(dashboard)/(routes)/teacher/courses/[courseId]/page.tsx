@@ -2,10 +2,13 @@ import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs";
 import { IconBadge } from "@/components/icon-badge";
-import { LayoutDashboard } from "lucide-react";
+import { CircleDollarSign, File, LayoutDashboard, ListChecks } from "lucide-react";
 import { TitleForm } from "./_components/title-form";
 import { DescriptionForm } from "./_components/description-form";
 import { ImageForm } from "./_components/image-form";
+import { CategoryForm } from "./_components/category-form";
+import { PriceForm } from "./_components/price-form";
+import { AttachmentForm } from "./_components/attachment-form";
 
 const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
 	const { userId } = auth();
@@ -16,6 +19,19 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
 		where: {
 			id: params.courseId,
 		},
+		include: {
+			attachments: {
+				orderBy: {
+					createdAt: "desc",
+				}
+			},
+		}
+	});
+
+	const categories = await db.category.findMany({
+		orderBy: {
+			name: "asc",
+		}
 	});
 
 	if (!course) {
@@ -53,6 +69,39 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
 					<TitleForm initialData={course} courseId={course.id} />
 					<DescriptionForm initialData={course} courseId={course.id} />
 					<ImageForm initialData={course} courseId={course.id} />
+					<CategoryForm initialData={course} courseId={course.id} options={categories.map((category) => ({
+						label: category.name,
+						value: category.id
+					}))} />
+
+				</div>
+				<div className="space-y-6">
+					<div>
+						<div className="flex items-center gap-x-2">
+							<IconBadge icon={ListChecks}></IconBadge>
+							<h2 className="text-xl">Isi Kursus</h2>
+						</div>
+						<div>
+							TODO: Isi Kursus
+						</div>
+					</div>
+					<div>
+						<div className="flex items-center gap-x-2">
+							<IconBadge icon={CircleDollarSign}></IconBadge>
+							<h2 className="text-xl">Harga Kursus</h2>
+						</div>
+						<PriceForm
+							initialData={course}
+							courseId={course.id}
+						/>
+					</div>
+					<div>
+						<div className="flex items-center gap-x-2">
+							<IconBadge icon={File}></IconBadge>
+							<h2 className="text-xl">Dokumen Kursus</h2>
+						</div>
+						<AttachmentForm initialData={course} courseId={course.id} />
+					</div>
 				</div>
 			</div>
 		</div>
