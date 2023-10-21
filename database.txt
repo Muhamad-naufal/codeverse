@@ -1,2 +1,0 @@
-username = ca0j3wvn0bsecvujcqzo
-password = pscale_pw_k0WKCtiP8Vl57rQpsrwgqkodp37lNcBu98kD2wttxMn
