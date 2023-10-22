@@ -20,6 +20,11 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
 			id: params.courseId,
 		},
 		include: {
+			chapters: {
+				orderBy: {
+					position: "asc",
+				},
+			},
 			attachments: {
 				orderBy: {
 					createdAt: "desc",
@@ -44,6 +49,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
 		course.imageUrl,
 		course.price,
 		course.categoryId,
+		course.chapters.some(chapter => chapter.isPublished)
 	];
 
 	const totalFields = requiredFields.length;
@@ -82,7 +88,6 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
 							<h2 className="text-xl">Isi Kursus</h2>
 						</div>
 						<div>
-							TODO: Isi Kursus
 						</div>
 					</div>
 					<div>
